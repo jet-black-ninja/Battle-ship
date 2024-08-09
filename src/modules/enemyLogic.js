@@ -35,14 +35,14 @@ function enemyLogic(){
             return (cell.cellResult === 'hit' && this.checkIfShipIsSunk(enemy,cell.adjacentCell) == false);
         });
         //if there is a hit (or multiple) adjacent , attack in the opposite direction
-        if(adjacent.length > 0){
+        if(adjacentHits.length > 0){
             const randomAdjacentHit=adjacentHits[Math.floor(Math.random() * adjacentHits.length)];
             let nextCell = this.getNextAttackableCell(enemy,lastHit,this.flipDirection(randomAdjacentHit.direction));
             if(nextCell===false){
                 nextCell= this.getNextAttackableCell(enemy,lastHit,randomAdjacentHit.direction);
             };
             while(nextCell=== false){
-                nextCell = this.getNextAttackableCell(enemy,lastHit,this.Directions[Math.floor(Math.random()* this.possibleDirections.length)]);
+                nextCell = this.getNextAttackableCell(enemy,lastHit,this.Directions[Math.floor(Math.random()* this.Directions.length)]);
             };
             return nextCell;
         }
@@ -64,7 +64,8 @@ function enemyLogic(){
         return cell.adjacentCell;
 
     }
-    function getRandomCell(enemy){
+    
+    function getRandomCell(enemy) {
         if(this.availableAttacks.length=== 0) return "no Squares to attack";
         //get row and col for a random attack from the availableAttacks array
         let arrayRow = Math.floor(Math.random() * this.availableAttacks.length);
@@ -72,29 +73,30 @@ function enemyLogic(){
         let cell = this.availableAttacks[arrayRow][arrayCol];
         //if the selected cell has 0 adjacent attackable cells get a random cell
         const adjacentCells = this.getAllAdjacentCells(enemy, cell);
-        if(adjacentCells.every(cell => typeof cell.cellResult !== 'object')){
+        if(adjacentCells.every(cell => typeof cell.cellResult !== 'object')) {
             return this.getRandomCell(enemy);
         }
         return cell;
     }
     //Remove a cell from the availableAttack array
-    function makeCellUnavailable(cell){
-        for(let row = 0 ; row < this.availableAttacks.length ; row++){
-            for(let col = 0 ; col < this.availableAttacks[row].length ; col++){
+    //gets called by player.js after attack 
+    function makeCellUnavailable(cell) {
+        for (let row = 0; row < this.availableAttacks.length; row++) {
+            for (let col = 0; col < this.availableAttacks[row].length; col++) {
                 const square = this.availableAttacks[row][col];
-                if(cell[0] === square[0] && cell[1]===square[1]){
-                    this.availableAttacks[row].splice(col,1);
-                    if(this.availableAttacks[row].length ===0)this.availableAttacks.splice(row,1);
-                    return ;
+                if (cell[0] === square[0] && cell[1] === square[1]) {
+                    this.availableAttacks[row].splice(col, 1);
+                    if (this.availableAttacks[row].length === 0) this.availableAttacks.splice(row, 1);
+                    return;
                 }
             }
         }
     }
-    function getAllAdjacentCells(enemy , cell){
+    function getAllAdjacentCells(enemy , cell) {
         return Directions.map(direction =>{
             const adjacentCell = this.getAdjacentCell(cell, direction);
             let cellResult = enemy.gameboard.checkSquare(adjacentCell[0],adjacentCell[1]);
-            if(cellResult === 'hit'){
+            if(cellResult === 'hit') {
                 if(this.checkIfShipIsSunk(enemy,adjacentCell)) cellResult = 'sunk';
             }
             return {
@@ -166,7 +168,7 @@ function enemyLogic(){
         return false;
     }
 
-    function flipDirection(){
+    function flipDirection(direction){
         switch(direction){
             case 'up':
                 return 'down';
@@ -187,7 +189,7 @@ function enemyLogic(){
         const enemyShip = enemy.gameboard.placedShips;
         let hitShip;
         enemyShip.forEach(ship => {
-            if(ship.squares.some(squares => {
+            if(ship.squares.some(square => {
                 return (square[0] === cell[0] && square[1]  === cell[1])
             })) hitShip = ship;;
         })
@@ -205,7 +207,7 @@ function enemyLogic(){
         availableAttacks,
         lastShip,
         lastHitArray,
-        possibleDirections,
+        Directions,
         concurrentMisses,
         attack,
         getRandomCell,

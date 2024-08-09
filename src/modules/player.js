@@ -4,17 +4,19 @@ import enemyLogic from './enemyLogic'
 function Player(playerName, playerNum){
     let name = typeof playerName === 'string' ? playerName : 'bot';
     const number = playerNum;
-    const isAI = typeof playerName !== 'string' ? true : false;
+    const isAI = typeof playerName === 'string' ? false : true;
     const gameboard = Gameboard();
     const enemy = enemyLogic();
     function attack(target, row , col){;
         if(this.isAI){
-            if(this.enemy.availableAttacks.length === 0) return "cannot attack further ";
+            if(this.enemy.availableAttacks.length === 0) 
+                return "cannot attack further";
             [row,col]= this.enemy.attack(target);
         }
+        //get the result of the attack
         const result = target.gameboard.receiveHit(row,col);
         if(this.isAI){
-            if(result[0] ==='hit'){
+            if(result[0] === 'hit'){
                 this.enemy.lastHitArray.push(result[1]);
                 this.enemy.concurrentMisses = 0;
             }

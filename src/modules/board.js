@@ -1,9 +1,9 @@
-import { AutomaticPrefetchPlugin } from "webpack";
 import Ship from "./ships"
 import shipTypes from "./shipTypes"
 function Gameboard(){
     const board =  createBoard();
     const placedShips = [];
+
     //create empty board array
     function createBoard() {
         let boardArray = [];
@@ -25,22 +25,21 @@ function Gameboard(){
             }
         }
     }
-
-    function placeShips(shipType , origin , alignment) {
+    function placeShip(shipType, origin, alignment) {       
         const shipLength = shipTypes[shipType].length;
-        const shipSquares = this.checkPlacement(shipLength, origin , alignment);
-        if(shipSquares.isValid){
+        const shipSquares = this.checkPlacement(shipLength, origin, alignment);
+        // If shipSquares is a valid array, place the ship on all of those squares
+        if (shipSquares.isValid) {
             const ship = Ship(shipType);
             ship.squares = shipSquares.squares;
             ship.alignment = alignment;
-            shipSquares.squares.forEach(squares => {
+            shipSquares.squares.forEach(square => {
                 let [row, col] = square;
                 this.board[row][col] = ship;
             })
             placedShips.push(ship);
             return ship;
-        }else 
-            return "Invalid position for Ship";
+        } else return "Cannot place ship in that location";
     }
 
     function checkPlacement(shipLength, origin , alignment) {
@@ -54,8 +53,10 @@ function Gameboard(){
         //if every every placement square is null, the validPlacement is an array of the valid squares
         const validPlacement = shipSquares.every(square =>{
             let [row, col]  = square;
-            if(this.checkSquare(row,col) === undefined) return false;
+            if(this.checkSquare(row,col) === undefined) 
+                return false;
             return this.board[row][col] === null;
+
         })
         //return an object containing the validPlacement and squares processed
         return {
@@ -65,26 +66,15 @@ function Gameboard(){
     }
 
     function checkSquare(row, col) {
-        if(row < 0 || row >9 || col < 0 || col >9) return undefined;
-        else return this.board[row][col];
+        if(row < 0 || col < 0 ) 
+            return undefined;
+        else if( row > 9 || col > 9){
+            return undefined;
+        }
+        else 
+            return this.board[row][col];
     }
-
-    function placeShip(shipType, origin, alignment) {
-        const shipLength =  shipTypes[shipType].length;
-        const shipSquares = this.checkPlacement(shipLength, origin, alignment);
-        if(shipSquares.isValid){
-            const ship = ship(shipType);
-            ship.squares = shipSquares.squares;
-            ship.alignment = alignment;
-            shipSquares.square.forEach(square => {
-                let [row, col]= square;
-                this.board[row, col] = ship;
-            });
-            placedShips.push(ship);
-            return ship;
-        }else 
-            return "Cannot place ship in this block";
-    }
+    
 
     function clearFleet(placedShips) {
         while(placedShips.length > 0 )placedShips.pop();
@@ -103,7 +93,7 @@ function Gameboard(){
 
     function placeShipsRandomly() {
         clearBoard(this.board);
-        clearFleet(this.placeShips);
+        clearFleet(this.placedShips);
         for(let ship in shipTypes){
             let result = this.placeShipRandomly(ship);
             while(typeof result !== 'object' || result === null){
@@ -111,9 +101,10 @@ function Gameboard(){
             }
         }
     }
+
     //Take a ship and place it at random square and random axis
     function placeShipRandomly(shipType) {
-        const shipLength = shipType[shipType].length;
+        const shipLength = shipTypes[shipType].length;
         function randomAlignment(){
             return Math.random() < 0.5 ? 'horizontal' : 'vertical';
         }
@@ -128,7 +119,7 @@ function Gameboard(){
             let col = Math.floor(Math.random() * (10 - colDif));
             return [row,col];
         }
-
+    
         let alignment = randomAlignment();
         let origin = getRandomSquare(alignment);
         let shipSquares = this.checkPlacement(shipLength,origin, alignment);
@@ -143,7 +134,7 @@ function Gameboard(){
     function receiveHit(row,col) {
         if(this.checkSquare(row,col) === undefined) return "Invalid Location";
         const attackedShip = this.board[row][col];
-        if(attackedShip=== null) this.board[row][col] = 'miss';
+        if(attackedShip === null) this.board[row][col] = 'miss';
         else {
             attackedShip.hit();
             this.board[row][col] = 'hit';
@@ -151,7 +142,7 @@ function Gameboard(){
         return [this.board[row][col] , [row][col], attackedShip];
     }
 
-    function checkAllShipsSunk(){
+    function checkAllShipsSunk() {
         return placedShips.every(ship=>ship.isSunk());
     }
 

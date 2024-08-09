@@ -18,13 +18,20 @@ function Game(){
     }
 
     function switchTurn(){
-        this.currentPlayer = this.currentPlayer === this.player1 ? this.player2 : this.player1;
-        this.defendingPlayer = this.defendingPlayer === this.player2 ? this.player1 : this.player2;
+        this.currentPlayer = this.currentPlayer === this.player1 
+            ? this.player2  
+            : this.player1;
+        this.defendingPlayer = this.defendingPlayer === this.player2 
+            ? this.player1 
+            : this.player2;
     }
     function checkGameOver(){
-        if(this.player1.gameboard.checkAllShipsSunk()) return this.player2;
-        else if(this.player2.gameboard.checkAllShipsSunk()) return this.player1;
-        else return false ;
+        if(this.player1.gameboard.checkAllShipsSunk()) 
+            return this.player2;
+        else if(this.player2.gameboard.checkAllShipsSunk()) 
+            return this.player1;
+        else 
+            return false ;
     }
     return {
         player1,
