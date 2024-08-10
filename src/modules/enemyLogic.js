@@ -8,17 +8,17 @@ function enemyLogic(){
     let concurrentMisses = 0;
     function attack(enemy){
         if(this.lastHitArray.length > 0){
-            this.checkIfShipIsSunk(enemy,this.lastHitArray[lastHitArray.length-1]);
+            this.checkIfShipIsSunk(enemy, this.lastHitArray[lastHitArray.length-1]);
         }
         if(this.availableAttacks.length === 0) return 'No Squares to Attacks';
         //if the boat misses more than 5 time , then it gets a chance to cheat 
-        if(this.lastHitArray.length===0){
+        if(this.lastHitArray.length === 0){
             if(this.concurrentMisses>5 && Math.random>0.8){
                 const enemyBoard = enemy.gameboard.board;
                 for(let row = 0; row<10 ; row++){
                     for(let col = 0; col<10 ;col++){
                         const cell = enemy.gameboard.checkSquare(row,col);
-                        if(typeof cell ==='object' && cell !== null){
+                        if(typeof cell === 'object' && cell !== null){
                             console.log('cheating');
                             return [row,col];
                         }
@@ -32,7 +32,7 @@ function enemyLogic(){
         const lastHit = this.lastHitArray[lastHitArray.length -1];
         const adjacentCells = this.getAllAdjacentCells(enemy,lastHit);
         const adjacentHits = adjacentCells.filter(cell => {
-            return (cell.cellResult === 'hit' && this.checkIfShipIsSunk(enemy,cell.adjacentCell) == false);
+            return (cell.cellResult === 'hit' && this.checkIfShipIsSunk(enemy, cell.adjacentCell) === false);
         });
         //if there is a hit (or multiple) adjacent , attack in the opposite direction
         if(adjacentHits.length > 0){
@@ -48,23 +48,23 @@ function enemyLogic(){
         }
 
         //go backwards through all other hit cells for adjacency to last hit cell and attack a cell in that direction
-        for(let i = this.lastHitArray.length - 2;i>= 0 ;i--){
+        for(let i = this.lastHitArray.length - 2; i>= 0 ; i--){
             const cell = this.lastHitArray[i];
             const result = this.getAdjacency(lastHit,cell);
             if(result){
-                let nextCell = this.getNextAttackableCell(enemy,lastHit,result.direction);
+                let nextCell = this.getNextAttackableCell(enemy, lastHit, result.direction);
                 if(nextCell) return nextCell;
             }
         }
         const adjacentCellToAttack = adjacentCells.filter(cell => {
             return typeof cell.cellResult !== 'string' && cell.cellResult !== undefined;
         });
-        const cell = adjacentCellToAttack[Math.floor(Math.random()* adjacentCellToAttack.length)];
-        console.log(cell.adjacentCell);
+        const cell = adjacentCellToAttack[Math.floor(Math.random() * adjacentCellToAttack.length)];
+        //console.log(cell.adjacentCell);
         return cell.adjacentCell;
 
     }
-    
+
     function getRandomCell(enemy) {
         if(this.availableAttacks.length=== 0) return "no Squares to attack";
         //get row and col for a random attack from the availableAttacks array
@@ -80,13 +80,14 @@ function enemyLogic(){
     }
     //Remove a cell from the availableAttack array
     //gets called by player.js after attack 
-    function makeCellUnavailable(cell) {
+    function removeCellFromAvailableAttacks(cell) {
         for (let row = 0; row < this.availableAttacks.length; row++) {
             for (let col = 0; col < this.availableAttacks[row].length; col++) {
                 const square = this.availableAttacks[row][col];
                 if (cell[0] === square[0] && cell[1] === square[1]) {
                     this.availableAttacks[row].splice(col, 1);
-                    if (this.availableAttacks[row].length === 0) this.availableAttacks.splice(row, 1);
+                    if (this.availableAttacks[row].length === 0) 
+                        this.availableAttacks.splice(row, 1);
                     return;
                 }
             }
@@ -211,7 +212,7 @@ function enemyLogic(){
         concurrentMisses,
         attack,
         getRandomCell,
-        makeCellUnavailable,
+        removeCellFromAvailableAttacks,
         getAdjacentCell,
         getAllAdjacentCells,
         getNextAttackableCell,

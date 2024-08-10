@@ -132,6 +132,7 @@ function Gameboard(){
     }
 
     function receiveHit(row,col) {
+
         if(this.checkSquare(row,col) === undefined) return "Invalid Location";
         const attackedShip = this.board[row][col];
         if(attackedShip === null) this.board[row][col] = 'miss';
@@ -139,7 +140,7 @@ function Gameboard(){
             attackedShip.hit();
             this.board[row][col] = 'hit';
         }
-        return [this.board[row][col] , [row][col], attackedShip];
+        return [this.board[row][col], [row, col], attackedShip];
     }
 
     function checkAllShipsSunk() {

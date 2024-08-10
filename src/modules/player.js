@@ -7,7 +7,7 @@ function Player(playerName, playerNum){
     const isAI = typeof playerName === 'string' ? false : true;
     const gameboard = Gameboard();
     const enemy = enemyLogic();
-    function attack(target, row , col){;
+    function attack(target, row , col){
         if(this.isAI){
             if(this.enemy.availableAttacks.length === 0) 
                 return "cannot attack further";
@@ -21,8 +21,8 @@ function Player(playerName, playerNum){
                 this.enemy.concurrentMisses = 0;
             }
             if(result[0] === 'miss') this.enemy.concurrentMisses++;
-            if(result[2] !== 'null') this.enemy.lastShip  = result[2];
-            this.enemy.makeCellUnavailable(result[1]);
+            if(result[2] !== 'null') this.enemy.lastShip = result[2];
+            this.enemy.removeCellFromAvailableAttacks(result[1]);
         }
         return result;
     }
