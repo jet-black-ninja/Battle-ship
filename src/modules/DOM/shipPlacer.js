@@ -1,5 +1,4 @@
-import { NormalModuleReplacementPlugin } from "webpack";
-import shipTypes from ('../shipTypes');
+import shipTypes from '../shipTypes'
 let player ;
 let board;
 
@@ -27,7 +26,7 @@ function drawSetupBoard(setupPlayer , setupBoard) {
         cell.addEventListener('dragover', dragOver);
         cell.addEventListener('dragenter', dragEnter);
         cell.addEventListener('dragleave', dragLeave);
-        cell.addEventListener('drop', dragDrop);
+        cell.addEventListener('drop', drop);
     })
     return setupBoard;
 }
@@ -149,7 +148,7 @@ function drawSetupShips() {
     const setupShipHeader = document.createElement('div');
     setupShipHeader.classList.add('setup-ships-header');
     const setupShipTitle = document.createElement('h3');
-    setupShipTitle.textContent('Place Your Ships');
+    setupShipTitle.textContent='Place Your Ships';
     const setupShipInfo = document.createElement('p');
     setupShipInfo.textContent = 'Drag and drop ships onto the board. Double Click after placing Ship to rotate';
     const setupShipOptions = document.createElement('div');
@@ -160,10 +159,10 @@ function drawSetupShips() {
     const randomShips = document.createElement('button');
     randomShips.classList.add('setup-button-random')
     randomShips.textContent = 'Randomize Ships';
-    randomShips.addEventListener('click',randomShips);
+    randomShips.addEventListener('click',randomizeFleet);
     setupShipOptions.append(startGame,randomShips);
     const shipList = document.createElement('div');
-    for(let ship of shipTypes){
+    for (let ship in shipTypes) {
         shipList.appendChild(drawShip(shipTypes[ship]));
     }
     setupShipHeader.append(setupShipTitle,setupShipInfo);
@@ -190,6 +189,7 @@ function drawShip(ship) {
     shipBox.addEventListener('dragstart', dragStart);
     shipBox.addEventListener('dragend', dragEnd);
     shipBox.addEventListener('dblclick', rotateShip);
+
     shipBox.addEventListener('touchmove', function(event) {
         const x = event.touches[0].clientX;
         const y = event.touches[0].clientY;
@@ -240,12 +240,19 @@ function drawShip(ship) {
         }
         shipBox.lastClick = time;
     });
+    const shipName = document.createElement('p');
+    if(ship.name === 'patrol') 
+        shipName.textContent = 'Patrol Boat';
+    else 
+        shipName.textContent =ship.name;
+    shipContainer.append(shipName, shipBox);
+    return shipContainer;
 }
 
 // Place ships randomly on the players board
 function randomizeFleet(){
-    player.gameboard.placeAllShipsRandomly();
-    player.gameboard.placeShips.forEach( ship => {
+    player.gameboard.placeShipsRandomly();
+    player.gameboard.placedShips.forEach( ship => {
         const type = ship.type; 
         const origin = ship.squares[0];
         const alignment = ship.alignment;
@@ -260,6 +267,7 @@ function randomizeFleet(){
         const cell = board.querySelector(`[data-row="${row}"][data-col="${col}"]`);
         cell.appendChild(shipElement);
     });
+}
 // When a user grabs a ship element, we track the user's cursor location for the dragEnter and drop events
 // When the ship is grabbed from the center, the cursor does not match up with the ship's origin cell
 // The cellDif difference between the origin cell to the cell where the user has grabbed the ship element
@@ -330,11 +338,12 @@ function rotateShip(event){
     }
 
 }
+
 const setup = {
     drawSetupBoard,
     drawSetupShips
 }
 
-}
+
 export default setup;
 

@@ -1,1 +1,3 @@
-import './style.css';
+import './style.css'
+import './modules/DOM/Controller'
+

@@ -2,21 +2,22 @@ function createFooter() {
     const footerBox = document.createElement('footer');
     const authorName = document.createElement('p');
     authorName.classList.add('footer-author');
-    authorName.textContent = 'Sachin Kumar Sing';
+    authorName.textContent = 'Sachin Kumar Singh';
     const footerLink = document.createElement('a');
     footerLink.id='footer-link';
     footerLink.setAttribute('href',"https://github.com/jet-black-ninja/Battle-ship/tree/main");
     const githubLogo = document.createElement('i');
-    githubLogo.classList.add('fa-brands','fa-github','fa-xl','footer-logo');
+    githubLogo.classList.add("fa-brands","fa-github","fa-xl","footer-logo");
     footerLink.appendChild(githubLogo);
+
     function getTheme(){
-        return localStorage.getItem('theme');
+        return localStorage.getItem("theme");
     }
 
     function toggleDarkTheme(){
     document.querySelector(':root').classList.toggle('dark');
-    darkModeButton.classList.toggle('fa-moon');
-    darkModeButton.classList.toggle('fa-sun');
+    darkModeButton.classList.toggle("fa-moon");
+    darkModeButton.classList.toggle("fa-sun");
     }
 
     function toggleDarkStorage() {
@@ -35,8 +36,8 @@ function createFooter() {
     
     const darkModeButton = document.createElement('i');
     darkModeButton.id = 'footer-dark-mode';
-    darkModeButton.classList.add('fa-solid','fa-moon','fa-xl');
-    darkModeButton.addEventListener('click',function() {
+    darkModeButton.classList.add("fa-solid","fa-moon","fa-xl");
+    darkModeButton.addEventListener('mousedown',function() {
         toggleDarkTheme();
         toggleDarkStorage();
     });
@@ -44,10 +45,10 @@ function createFooter() {
     if(getTheme() === 'dark' || (!getTheme() && checkDarkMode())) {
         toggleDarkTheme();
     }
-    footer.appendChild(authorName);
-    footer.appendChild(footerLink);
-    footer.appendChild(darkModeButton);
-    return footer;
+    footerBox.appendChild(authorName);
+    footerBox.appendChild(footerLink);
+    footerBox.appendChild(darkModeButton);
+    return footerBox;
 }
 
 export default createFooter ;

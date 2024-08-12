@@ -1,7 +1,6 @@
 import Game from '../game';
 import createHeader from './header';
 import createFooter from './footer';
-import shipTypes from '../shipTypes';
 import setup from './shipPlacer';
 
 const app = document.createElement('div');
@@ -29,9 +28,10 @@ function newGame(){
     const newPlayer1 = game.CreatePlayer('John', 1);
     const newPlayer2 = game.CreatePlayer(false, 2);
     newPlayer2.gameboard.placeShipsRandomly();
+    drawSetup(newPlayer1);
     const startGameButton = document.querySelector('.setup-button-start');
     startGameButton.addEventListener('click', function (event){
-        if(newPlayer1.gameboard.placedShips.length > 5){
+        if(newPlayer1.gameboard.placedShips.length === 5){
             startGame(newPlayer1, newPlayer2);
         }
     });
@@ -59,8 +59,10 @@ function drawSetup(player){
 // If the game container height if over 500px, we can see the flexbox is wrapped
 // We then adjust the header to match the width of the game boards - instead of being 100% wide
 const gameSizeObserver = new ResizeObserver(entry => {
-    if(entry[0].contentRect.height>500) header.style.width = '320px';
-    else header.style.width = `${entry[0].contentRect.width}px`;
+    if(entry[0].contentRect.height>500) 
+        header.style.width = '320px';
+    else 
+        header.style.width = `${entry[0].contentRect.width}px`;
 })
 gameSizeObserver.observe(gameContainer);
 
