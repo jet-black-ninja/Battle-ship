@@ -66,18 +66,12 @@ function Gameboard(){
     }
 
     function checkSquare(row, col) {
-        if(row < 0 || col < 0 ) 
-            return undefined;
-        else if( row > 9 || col > 9){
-            return undefined;
-        }
-        else 
-            return this.board[row][col];
+        if (row < 0 || col < 0) return undefined;
+        if (row > 9 || col > 9) return undefined;
+        else return this.board[row][col];
     }
-    
-
-    function clearFleet(placedShips) {
-        while(placedShips.length > 0 )placedShips.pop();
+    function clearFleet(fleet) {
+        while(fleet.length > 0 ) fleet.pop();
     }
 
     function removeShip(origin) {

@@ -29,7 +29,7 @@ function newGame(){
     const newPlayer2 = game.CreatePlayer(false, 2);
     newPlayer2.gameboard.placeShipsRandomly();
     drawSetup(newPlayer1);
-    const startGameButton = document.querySelector('.setup-button-start');
+    const startGameButton = document.querySelector('.start-game-button');
     startGameButton.addEventListener('click', function (event){
         if(newPlayer1.gameboard.placedShips.length === 5){
             startGame(newPlayer1, newPlayer2);
@@ -86,11 +86,11 @@ function drawBoard(player){
         for(let col = 0 ; col < 10 ; col++){
             const cell = document.createElement('div');
             cell.classList.add('cell');
-            cell.dataset.player = player ? player.number: 0;
+            cell.dataset.player = player ? player.number : 0;
             cell.dataset.row = row;
             cell.dataset.col = col;
             board.appendChild(cell);
-            if(player.isAI && player) cell.addEventListener('click', listenForAttack, false);
+            if(player && player.isAI) cell.addEventListener('click', listenForAttack, false);
         }
     }
     return board;
@@ -100,9 +100,10 @@ function populateBoard(player,board){
     for(let row = 0 ; row < 10 ; row++){
         for(let col = 0 ; col < 10 ; col++){
             const square = player.gameboard.board[row][col];
-            const cell = board.querySelector(`[data-row="${row}"][data-col="${col}]`);
-            if(square!== null && typeof square === 'object')
+            const cell = board.querySelector(`[data-row='${row}'][data-col='${col}']`);
+            if(square !== null && typeof square === 'object'){
                 cell.classList.add('cell-ship');
+            }
             else
                 cell.classList.remove('cell-ship');
         }   
@@ -131,7 +132,7 @@ function callAIAttack(AI){
 if(AI !== game.currentPlayer)return ;
 const defendingPlayerNumber = game.defendingPlayer=== game.player1 ?'1':'2';
 const [result , location , ship]= AI.attack(game.defendingPlayer);
-const cell = document.querySelector(`[data-player='${defendingPlayerNumber}][data-row='${location[0]}'][data-col='${location[1]}']`)
+const cell = document.querySelector(`[data-player='${defendingPlayerNumber}'][data-row='${location[0]}'][data-col='${location[1]}']`)
 styleAttackedCell(cell, defendingPlayerNumber, result, ship);
 nextTurn();
 }
@@ -143,7 +144,7 @@ function styleAttackedCell(cell, defendingPlayerNumber, result , ship) {
         cell.classList.add('cell-hit');
         if(ship.isSunk()){
             ship.squares.forEach(square => {
-                const cell = document.querySelector(`[data-player='${defendingPlayerNumber}'][data-row='${square[0]}'}][data-col='${square[1]}']`)
+                const cell = document.querySelector(`[data-player='${defendingPlayerNumber}'][data-row='${square[0]}'][data-col='${square[1]}']`)
                 cell.classList.add('cell-sunk')
             })
         }

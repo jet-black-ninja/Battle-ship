@@ -34,6 +34,7 @@ function drawSetupBoard(setupPlayer , setupBoard) {
 function dragStart(event) {
     if(event.type === 'touchstart') {
         dragData.shipElement = event.target.parentElement;
+        console.log(dragData.shipElement)
         dragData.shipHomeContainer = document.querySelector(`#${event.target.parentElement.id}-home`);
         dragData.prevContainer = event.target.parentElement.parentElement;
     } else {
@@ -56,7 +57,7 @@ function dragStart(event) {
         const cell = dragData.prevContainer;
         const row = parseInt(cell.dataset.row);
         const col = parseInt(cell.dataset.col);
-        player.gameBoard.removeShip([row,col]);
+        player.gameboard.removeShip([row,col]);
     }
 }
 
@@ -65,7 +66,7 @@ function dragEnd(event){
 }
 
 function dragEnter(event) {
-    DragEvent(event);
+    dragLeave(event);
     event.preventDefault();
     const type = dragData.shipElement.id;
     let row;
@@ -78,13 +79,13 @@ function dragEnter(event) {
         col = parseInt(event.target.dataset.col) - parseInt(dragData.colDiff);
     }
 
-    const shipSquares = player.gameBoard.checkPlacement(shipTypes[type].length , [row, col],  dragData.shipElement.dataset.alignment);
+    const shipSquares = player.gameboard.checkPlacement(shipTypes[type].length , [row, col],  dragData.shipElement.dataset.alignment);
     shipSquares.squares = shipSquares.squares.filter(square => {
-        return player.gameBoard.checkSquare(square[0],square[1]) !== undefined;
+        return player.gameboard.checkSquare(square[0],square[1]) !== undefined;
     })
 
     shipSquares.squares.forEach(square => {
-        const cell = board.querySelector(`[data-row='${square[0]}'][data-col'${square[1]}']`);
+        const cell = board.querySelector(`[data-row='${square[0]}'][data-col='${square[1]}']`);
         const cellOverlay = document.createElement('div');
         cellOverlay.classList.add('cell','cell-drag-over');
         cell.appendChild(cellOverlay);
@@ -109,7 +110,7 @@ function drop(event, touchCell){
     let row;
     let col;
     const type = dragData.shipElement.id;
-    if(event.type === touched){
+    if(event.type === 'touchend'){
         row = parseInt(touchCell.dataset.row) - parseInt(dragData.rowDiff);
         col = parseInt(touchCell.dataset.col) - parseInt(dragData.colDiff);
     } else {
@@ -303,7 +304,7 @@ function rotateShip(event){
     const originRow = praseInt(originCell.dataset.row);
     const originCol = parseInt(originCell.dataset.col);
     console.log(originRow,originCol);
-    player.gameBoard.removeShip([originRow, originCol]);
+    player.gameboard.removeShip([originRow, originCol]);
     let row = originRow;
     let col = originCol;
     let originAlignment = shipElement.dataset.alignment;
@@ -317,7 +318,7 @@ function rotateShip(event){
     }
 
     let attempts = 0;
-    let shipSquares = player.gameBoard.checkPlacement(shipLength, [row,col], newAlignment);
+    let shipSquares = player.gameboard.checkPlacement(shipLength, [row,col], newAlignment);
     while(shipSquares.isValid === false && attempts < 10){
         if(newAlignment === 'horizontal')
             row = row < 9 ? row + 1 : 0;
